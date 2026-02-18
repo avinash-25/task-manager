@@ -10,16 +10,13 @@ import {
   updateTaskStatus,
 } from "../controllers/task.controller.js";
 
-import { protect } from "../middlewares/auth.middleware.js";
+import { authenticate } from "../middlewares/auth.middleware.js";
 
-// All routes are protected
-router.use(protect);
+router.get("/all", getTasks);
+router.post("/add", authenticate, createTask);
+router.put("/update/:id", authenticate, updateTask);
+router.delete("/delete/:id", authenticate, deleteTask);
 
-router.get("/", getTasks);
-router.post("/", createTask);
-router.put("/:id", updateTask);
-router.delete("/:id", deleteTask);
-
-router.patch("/:id/status", updateTaskStatus);
+router.patch("/update-status/:id", updateTaskStatus);
 
 export default router;
