@@ -11,7 +11,7 @@ const generateToken = (id) => {
   });
 };
 
-// POST /api/auth/register
+//* Register
 export const register = asyncHandler(async (req, res, next) => {
   const { name, email, password } = req.body;
 
@@ -49,46 +49,53 @@ export const register = asyncHandler(async (req, res, next) => {
       token,
     },
   });
-  res.status(500).json({ success: false, message: "Server error" });
 });
 
-// POST /api/auth/login
+//* Login
 export const login = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
 
   if (!email || !password) {
-    return res
-      .status(400)
-      .json({ success: false, message: "Please provide email and password" });
+    return res.status(400).json({
+      success: false,
+      message: "Please provide email and password",
+    });
   }
 
   const user = await User.findOne({ email });
-  if (!user) {
-    return res
-      .status(401)
-      .json({ success: false, message: "Invalid credentials" });
-  }
 
-  // const isMatch = password === user.password; //* this is bug see bug.md file for this
-  const isMatch = await user.comparePassword(password); // this is the correct code
+  if (!user) {
+    return res.status(401).json({
+      success: false,
+      message: "Invalid email",
+    });
+  }
+  //const isMatch = password === user.password; //* Bug - Plain text password comparison (insecure)
+  const isMatch = await user.comparePassword(password);
 
   if (!isMatch) {
-    return res
-      .status(401)
-      .json({ success: false, message: "Invalid credentials" });
+    return res.status(401).json({
+      success: false,
+      message: "Invalid password",
+    });
   }
 
   const token = generateToken(user._id);
 
-  res.status(200).json({
+  // token saved to the postman cookie section for testing protected routes
+  res.cookie("token", token, {
+    httpOnly: true,
+    maxAge: 1 * 24 * 60 * 60 * 1000, // 1 day
+  });
+
+  req.user = user; // Attach user ID to request for protected routes
+
+  return res.status(200).json({
     success: true,
     message: "Login successful",
     data: {
-      id: user._id,
       name: user.name,
       email: user.email,
-      token,
     },
   });
-  res.status(500).json({ success: false, message: "Server error" });
 });
