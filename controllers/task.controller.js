@@ -1,7 +1,7 @@
 import Task from "../models/task.model.js";
 import asyncHandler from "express-async-handler";
 
-// POST /api/tasks
+//* create task
 export const createTask = asyncHandler(async (req, res) => {
   const { title, description, status, priority, dueDate } = req.body;
 
@@ -23,7 +23,7 @@ export const createTask = asyncHandler(async (req, res) => {
   res.status(201).json({ success: true, message: "Task created", data: task });
 });
 
-// GET /api/tasks
+//* get all task
 export const getTasks = asyncHandler(async (req, res) => {
   const { status, priority, sort, order, page = 1, limit = 10 } = req.query;
 
@@ -66,7 +66,7 @@ export const getTasks = asyncHandler(async (req, res) => {
   });
 });
 
-// PUT /api/tasks/:id
+//* update task using id
 export const updateTask = asyncHandler(async (req, res) => {
   const task = await Task.findOne({
     _id: req.params.id,
@@ -88,7 +88,7 @@ export const updateTask = asyncHandler(async (req, res) => {
   res.status(200).json({ success: true, message: "Task updated", data: task });
 });
 
-// DELETE /api/tasks/:id
+//* delete task using id
 export const deleteTask = asyncHandler(async (req, res) => {
   const task = await Task.findOneAndDelete({
     _id: req.params.id,
@@ -102,7 +102,7 @@ export const deleteTask = asyncHandler(async (req, res) => {
   res.status(200).json({ success: true, message: "Task deleted" });
 });
 
-// PATCH /api/tasks/:id/status (bonus)
+//* update task status using id
 export const updateTaskStatus = asyncHandler(async (req, res) => {
   const { status } = req.body;
 
