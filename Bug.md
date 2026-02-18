@@ -11,7 +11,7 @@ This means **no user will ever be able to log in**, because `"mypassword123" ===
 ## Where does it live?
 
 **File:** `controllers/auth.controller.js`
-**Line:** ~52
+**Line:** ~73
 
 ```js
 // BUGGY CODE
